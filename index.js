@@ -10,6 +10,8 @@ import categoryRoutes from "./routes/category.js";
 import subCategoryRoutes from "./routes/subCategory.js";
 import resourceRoutes from "./routes/resource.js";
 import emailRoutes from "./routes/email.js";
+import adminRoutes from "./routes/admin.js"
+import contributerRoutes from './routes/contributer.js'
 
 const __dirname = path.resolve();
 
@@ -36,6 +38,8 @@ app.use("/category", categoryRoutes);
 app.use("/subCategory", subCategoryRoutes);
 app.use("/resource", resourceRoutes);
 app.use("/email", emailRoutes);
+app.use("/admin", adminRoutes)
+app.use("/contributer", contributerRoutes)
 
 //PORT
 const PORT = process.env.PORT || 8000;
