@@ -64,25 +64,11 @@ const signIn = async (req, res) => {
         }
         if (result) {
           const token = await user.generateAuthToken();
-          const resources = await Resource.find();
-          const categories = await Category.find();
-          const subCategories = await SubCategory.find()
-            .sort({ category: 1 })
-            .populate("category");
-          const requests = await Contributer.find();
-
-          const data = {
-            resources,
-            categories,
-            subCategories,
-            requests,
-          };
 
           res.status(200).json({
             msg: "User Logged In",
             email: user.email,
             token,
-            data,
           });
         } else {
           res.send("Admin not Verified").status(404);
@@ -90,6 +76,76 @@ const signIn = async (req, res) => {
       });
     }
   } catch (e) {
+    res.status(500).json({
+      msg: "Some Error Occured",
+    });
+  }
+};
+
+// @desc    Get all Resources
+// @route   GET /admin/getresources
+// @access  Admin
+
+const getResources = async (req, res) => {
+  try {
+    const resources = await Resource.find();
+    res.status(200).json({
+      resources,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Some Error Occured",
+    });
+  }
+};
+
+// @desc    Get all Categories
+// @route   GET /admin/getcategories
+// @access  Admin
+
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.status(200).json({
+      categories,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Some Error Occured",
+    });
+  }
+};
+
+// @desc    Get all Requests
+// @route   GET /admin/getrequests
+// @access  Admin
+
+const getRequests = async (req, res) => {
+  try {
+    const requests = await Contributer.find();
+    res.status(200).json({
+      requests,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "Some Error Occured",
+    });
+  }
+};
+
+// @desc    Get all Sub Catgories
+// @route   GET /admin/getsubcategories
+// @access  Admin
+
+const getSubCategories = async (req, res) => {
+  try {
+    const subCategories = await SubCategory.find()
+      .sort({ category: 1 })
+      .populate("category");
+    res.status(200).json({
+      subCategories,
+    });
+  } catch (error) {
     res.status(500).json({
       msg: "Some Error Occured",
     });
@@ -116,14 +172,8 @@ const reviewContribution = async (req, res) => {
       await newResource.save();
     }
     await Contributer.findByIdAndDelete(_id);
-    const resources = await Resource.find();
-    const requests = await Contributer.find();
     res.status(200).json({
       msg: "Request Updated",
-      data: {
-        resources,
-        requests,
-      },
     });
   } catch (error) {
     console.log(error, "new error");
@@ -131,4 +181,4 @@ const reviewContribution = async (req, res) => {
   }
 };
 
-export { signUp, signIn, reviewContribution };
+export { signUp, signIn, reviewContribution, getRequests, getCategories, getResources, getSubCategories };
