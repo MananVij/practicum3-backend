@@ -17,10 +17,11 @@ const createResource = async (req, res) => {
 
     if (!resource) throw new Error("Error creating new resource");
     await resource.save();
+    const resources = await Resource.find();
 
     res.status(201).json({
       status: "Successfully Created Resource",
-      data: resource,
+      data: resources,
     });
   } catch (error) {
     throw new Error(error);

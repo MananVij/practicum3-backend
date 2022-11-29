@@ -101,11 +101,11 @@ const signIn = async (req, res) => {
 // @access  Admin
 
 const reviewContribution = async (req, res) => {
-  const status = req.body.status;
-  const _id = req.query.reqId;
-  if (status) {
-    const resource = await Contributer.findById(_id);
-    try {
+  try {
+    const status = req.body.status;
+    const _id = req.query.reqId;
+    if (status) {
+      const resource = await Contributer.findById(_id);
       const newResource = new Resource({
         title: resource.title,
         link: resource.link,
@@ -114,13 +114,21 @@ const reviewContribution = async (req, res) => {
         subCategory: req.body.subCategory,
       });
       await newResource.save();
-    } catch (error) {
-      console.log(error, "new error");
-      res.status(500).send("Some Error Occured");
     }
+    await Contributer.findByIdAndDelete(_id);
+    const resources = await Resource.find();
+    const requests = await Contributer.find();
+    res.status(200).json({
+      msg: "Request Updated",
+      data: {
+        resources,
+        requests,
+      },
+    });
+  } catch (error) {
+    console.log(error, "new error");
+    res.status(500).send("Some Error Occured");
   }
-  await Contributer.findByIdAndDelete(_id);
-  res.status(200).send("Request Updated");
 };
 
 export { signUp, signIn, reviewContribution };
